@@ -5,21 +5,21 @@ class Admin::UsersController < ApplicationController
 
     # def is_admin
     #    redirect_to admin_users_path if current_user.is_admin==true
-       
+
     # end
 
     def index
         @users = User.all.where.not(id: current_user.id)
         redirect_to tasks_path, notice: 'only the administrator can access it' if current_user.is_admin != true
     end
-    
+
     def show
         redirect_to tasks_path, notice: 'only the administrator can access it' if current_user.is_admin != true
-        
+
     end
-  
+
     def new
-      if current_user&.is_admin 
+      if current_user && current_user.is_admin 
         @user = User.new
       elsif current_user ==nil
         @user = User.new
@@ -27,16 +27,16 @@ class Admin::UsersController < ApplicationController
         redirect_to tasks_path
       end
     end
-  
+
     def edit
     end
-  
+
     def create
       @user = User.new(user_params)
-      
+
       respond_to do |format|
         if @user.save
-          if current_user == nil 
+          if current_user == nil
             session[:user_id] = @user.id
           end
           format.html { redirect_to tasks_path, notice: "User was successfully created." }
@@ -47,9 +47,9 @@ class Admin::UsersController < ApplicationController
         end
       end
     end
-  
+
     def update
-      
+
       respond_to do |format|
         if @user.update(user_params)
           format.html { redirect_to @user, notice: "Changed user information" }
@@ -60,7 +60,7 @@ class Admin::UsersController < ApplicationController
         end
       end
     end
-  
+
     def destroy
       @user.destroy
       respond_to do |format|
@@ -68,14 +68,14 @@ class Admin::UsersController < ApplicationController
         format.json { head :no_content }
       end
     end
-  
+
     private
     def set_user
       @user = User.find(params[:id])
     end
-  
+
     def user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation, :is_admin)
     end
-    
+
 end
