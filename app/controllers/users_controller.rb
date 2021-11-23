@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
     before_action :set_user, only: %i[ show edit update destroy ]
     skip_before_action :login_required, only: [ :new, :create]
-    def index 
+    def index
       @users = User.all
     end
     def show
@@ -11,9 +11,9 @@ class UsersController < ApplicationController
       @tasks = @user.tasks.all.page(params[:page]).per(2)
       end
     end
-  
+
     def new
-      if current_user&.is_admin 
+      if current_user
         @user = User.new
       elsif current_user ==nil
         @user = User.new
@@ -21,17 +21,17 @@ class UsersController < ApplicationController
         redirect_to tasks_path
       end
     end
-  
+
     def edit
     end
-  
+
     def create
       @user = User.new(user_params)
       @user.is_admin = false
-  
+
       respond_to do |format|
         if @user.save
-          if current_user == nil 
+          if current_user == nil
             session[:user_id] = @user.id
           end
           format.html { redirect_to tasks_path, notice: "User was successfully created." }
@@ -42,7 +42,7 @@ class UsersController < ApplicationController
         end
       end
     end
-  
+
     def update
       respond_to do |format|
         if @user.update(user_params)
@@ -54,7 +54,7 @@ class UsersController < ApplicationController
         end
       end
     end
-  
+
     def destroy
       @user.destroy
       respond_to do |format|
@@ -62,15 +62,14 @@ class UsersController < ApplicationController
         format.json { head :no_content }
       end
     end
-  
+
     private
     def set_user
       @user = User.find(params[:id])
     end
-  
+
     def user_params
       params.require(:user).permit(:email, :password, :password_confirmation, :is_admin)
     end
-   
+
   end
-  

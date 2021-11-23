@@ -19,7 +19,7 @@ class Admin::UsersController < ApplicationController
     end
 
     def new
-      if current_user && current_user.is_admin 
+      if current_user && current_user.is_admin
         @user = User.new
       elsif current_user ==nil
         @user = User.new
@@ -33,7 +33,7 @@ class Admin::UsersController < ApplicationController
 
     def create
       @user = User.new(user_params)
-
+      @user.is_admin = true
       respond_to do |format|
         if @user.save
           if current_user == nil
