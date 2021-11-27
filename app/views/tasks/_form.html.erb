@@ -1,0 +1,51 @@
+<%= form_with(model: task, local: true) do |form| %>
+  <% if task.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h2>
+
+      <ul>
+      <% task.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :content %>
+    <%= form.text_area :content %>
+  </div>
+  <div class="field">
+    <%= form.label :status %>
+    <%= form.select :status, Task.statuses.keys %>
+  </div>
+  <div class="field">
+    <%= form.label :priority %>
+    <%= form.select :priority, Task.priorities.keys %>
+  </div>
+  <div class="field form-group">
+    <%= form.label :deadline %>
+    <%= form.date_field :deadline %>
+  </div>
+  <h4>Labels</h4>
+ 
+  
+     <div class="row">
+      <% @labels.each do |label| %>
+      <div class="col m-3 col-lg-2">
+          <p>
+            <%= form.check_box :label_ids, { multiple: true, checked: @task.labels.find_by(id: label.id).present?,  disabled: label[:disabled], include_hidden: false }, label[:id] %>
+          <%=form.label :label_ids, label.name,value:label[:id],style:'text-decoration:none'%>
+          </p>
+        </div>
+     <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
